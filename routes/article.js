@@ -1,7 +1,9 @@
 const express = require('express');
 const Article = require('../models/article');
+const User = require('../models/user');
 
 const router = express.Router();
+
 /* GET articles */
 
 router.get('/', async (req, res, next) => {
@@ -9,6 +11,46 @@ router.get('/', async (req, res, next) => {
     const articles = await Article.find();
     res.status(200).json(articles);
   } catch (error) {
+    console.log(error);
+  }
+});
+
+/* GET articles by location */
+
+router.get('/near', async (req, res, next) => {
+  try {
+    const usersId = [];
+    const {
+      distance,
+      lat,
+      long,
+    } = req.body;
+
+    const users = await User.find({
+      loc: {
+        $geoWithin: {
+          $centerSphere: [
+            [long, lat], distance / 6378.1,
+          ],
+        },
+      },
+    });
+
+
+    await users.forEach((user) => {
+      usersId.push(user._id);
+    });
+
+    const articlesNear = await Article.find({
+      $and: [{
+        userID: {
+          $in: usersId,
+        },
+      }],
+    }).populate('userID');
+    res.status(200).json(articlesNear);
+  } catch (error) {
+    res.status(500).json({ error });
     console.log(error);
   }
 });
