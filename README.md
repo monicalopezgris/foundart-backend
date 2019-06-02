@@ -2,7 +2,7 @@
 
 ## Description
 
-Found Art is an app where you can publish, search (rent or buy) art near you.
+Found Art is an app where you can  publish, search (rent or buy) art near you.
 
 ## User Stories
 
