@@ -2,6 +2,16 @@ const express = require('express');
 const Article = require('../models/article');
 
 const router = express.Router();
+/* GET articles */
+
+router.get('/', async (req, res, next) => {
+  try {
+    const articles = await Article.find();
+    res.status(200).json(articles);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 /* POST new article */
 router.post('/', async (req, res, next) => {
