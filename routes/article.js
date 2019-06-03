@@ -74,4 +74,19 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+/* UPDATE article */
+router.put('/:id', async (req, res, next) => {
+  const {
+    title, price, category, type, description, state,
+  } = req.body;
+  const { id } = req.query;
+  try {
+    const article = await Article.findByIdAndUpdate(id, {
+      title, price, category, type, description,
+    });
+    res.status(200).json(article);
+  } catch (error) {
+    console.log(error);
+  }
+});
 module.exports = router;
