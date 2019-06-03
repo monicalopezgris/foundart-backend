@@ -36,9 +36,9 @@ router.get('/near', async (req, res, next) => {
       },
     });
 
-
     await users.forEach((user) => {
-      usersId.push(user._id);
+      const { _id: id } = user;
+      usersId.push(id);
     });
 
     const articlesNear = await Article.find({
