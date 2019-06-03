@@ -100,4 +100,15 @@ router.put('/:id', async (req, res, next) => {
     console.log(error);
   }
 });
+
+/* DELETE article */
+router.delete('/:id', async (req, res, next) => {
+  const { id } = req.query;
+  try {
+    const article = await Article.findByIdAndDelete(id);
+    res.status(200).json(article);
+  } catch (error) {
+    console.log(error);
+  }
+});
 module.exports = router;
