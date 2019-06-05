@@ -1,4 +1,4 @@
-const { check, validationResult } = require('express-validator/check');
+const { query, check, validationResult } = require('express-validator/check');
 
 module.exports = {
   handleValidatorRes: (req, res, next) => {
@@ -30,12 +30,12 @@ module.exports = {
     check('title')
       .isLength({ min: 3 })
       .withMessage('Article must have more than 3 characters')
-      .isNumeric()
+      .isString()
       .withMessage('Article title must be AlfhaNumeric'),
     check('category')
       .isString()
       .withMessage('Must be a string'),
-    check('style')
+    check('type')
       .isString()
       .withMessage('Must be a string'),
     check('price')
@@ -47,5 +47,10 @@ module.exports = {
     check('status')
       .isString()
       .withMessage('Must be a string'),
+  ],
+  idValidator: [
+    check('id')
+      .isString()
+      .withMessage('Must be a valid Id'),
   ],
 };

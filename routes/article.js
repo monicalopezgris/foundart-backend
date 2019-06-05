@@ -1,5 +1,5 @@
 const express = require('express');
-const { nearValidator, handleValidatorRes, newUpdateArticleValidator } = require('../helpers/validators/article');
+const { nearValidator, handleValidatorRes, newUpdateArticleValidator, idValidator } = require('../helpers/validators/article');
 const Article = require('../models/article');
 const User = require('../models/user');
 
@@ -80,8 +80,8 @@ router.post('/', newUpdateArticleValidator, async (req, res, next) => {
 });
 
 /* GET article */
-router.get('/:id', async (req, res, next) => {
-  const { id } = req.query;
+router.get('/:id', idValidator, async (req, res, next) => {
+  const { id } = req.params;
   try {
     const article = await Article.findById(id);
     res.status(200).json(article);
@@ -92,30 +92,32 @@ router.get('/:id', async (req, res, next) => {
 
 /* UPDATE article */
 router.put('/:id', newUpdateArticleValidator, async (req, res, next) => {
-  if (!handleValidatorRes(req, res)) {
-    const {
-      title, price, category, type, description, state,
-    } = req.body;
-    const { id } = req.query;
-    try {
-      const article = await Article.findByIdAndUpdate(id, {
-        title, price, category, type, description,
-      });
-      res.status(200).json(article);
-    } catch (error) {
-      console.log(error);
-    }
+  const { id } = req.params;
+  const {
+    title, price, category, type, description, state,
+  } = req.body;
+  handleValidatorRes(req, res, next);
+  try {
+    const article = await Article.findByIdAndUpdate(id, {
+      title, price, category, type, description,
+    });
+    res.status(200).json(article);
+  } catch (error) {
+    console.log(error);
   }
 });
 
 /* DELETE article */
-router.delete('/:id', async (req, res, next) => {
-  const { id } = req.query;
-  try {
-    const article = await Article.findByIdAndDelete(id);
-    res.status(200).json(article);
-  } catch (error) {
-    console.log(error);
+router.delete('/:id', idValidator, async (req, res, next) => {
+  if (!handleValidatorRes(req, res, next)) {
+    const { id } = req.query;
+    console.log(req.query)
+    try {
+      const article = await Article.findByIdAndDelete(id);
+      res.status(200).json(article);
+    } catch (error) {
+      console.log(error);
+    }
   }
 });
 module.exports = router;
