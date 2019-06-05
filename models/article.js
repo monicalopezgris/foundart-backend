@@ -8,6 +8,7 @@ const articleSchema = new Schema({
   category: String,
   type: String,
   description: String,
+  imgPath: String,
   price: Number,
   userID: {
     type: ObjectId,

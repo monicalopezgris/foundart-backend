@@ -9,6 +9,7 @@
   "dependencies": {
     "bcrypt": "^3.0.4",
     "body-parser": "~1.18.2",
+    "cloudinary": "^1.14.0",
     "connect-mongo": "^2.0.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
