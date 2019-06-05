@@ -1,7 +1,8 @@
 const express = require('express');
 const createError = require('http-errors');
-
 const bcrypt = require('bcrypt');
+
+const { signUpValidator, validationResult } = require('../helpers/validators/auth');
 
 const bcryptSalt = 10;
 const router = express.Router();
@@ -9,7 +10,13 @@ const router = express.Router();
 const User = require('../models/user');
 
 /* CREATE USER */
-router.post('/signup', async (req, res, next) => {
+router.post('/signup', signUpValidator, async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json(errors.array());
+  }
+
   const {
     name,
     lastName,
@@ -20,6 +27,7 @@ router.post('/signup', async (req, res, next) => {
     long,
     password,
   } = req.body;
+
   try {
     const user = await User.findOne({ username }, 'username');
     if (user) {

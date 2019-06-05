@@ -1,14 +1,7 @@
 const { query, check, validationResult } = require('express-validator/check');
 
 module.exports = {
-  handleValidatorRes: (req, res, next) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(422).json(errors.array());
-    }
-    next();
-  },
+  validationResult,
   nearValidator: [
     check('distance')
       .isLength({ min: 1 })
