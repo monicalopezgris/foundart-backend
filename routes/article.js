@@ -141,4 +141,38 @@ router.delete('/:id', idValidator, async (req, res, next) => {
     console.log(error);
   }
 });
+
+// FAVORITE
+
+router.get('/favorites', async (req, res, next) => {
+  const { _id: userID } = req.session.currentUser;
+  try {
+    const user = await User.findById(userID).populate('favorite.articleID');
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.post('/favorites', async (req, res, next) => {
+  const { _id: userID } = req.session.currentUser;
+  const { articleId } = req.body;
+  const favorite = { articleID: articleId };
+  try {
+    const fav = await User.find(
+      //idUser &&
+      { favorites: { $elemMatch: { favorite } } },
+    );
+    if (!fav) {
+      const user = await User.findOneAndUpdate({ _id: userID }, {
+        $push: { favorite },
+      });
+      res.status(200).json(user);
+    }
+    res.status(422).json({ message: 'The article is already favorite' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
