@@ -176,6 +176,7 @@ router.put('/favorites', async (req, res, next) => {
 });
 
 // GET single article favorite
+// check
 router.get('/favorites/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -184,6 +185,28 @@ router.get('/favorites/:id', async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+// Creates a rent request for the article
+router.post('/request', async (req, res, next) => {
+  const {
+    dateStart, dateEnd, articleId, articlePrice,
+  } = req.body;
+  const userID = req.session.currentUser;
+  const ds = moment(dateStart);
+  const de = moment(dateEnd);
+  const totalPrice = (de.diff(ds, 'days')) * articlePrice;
+  const rent = {
+    lesseeID: userID,
+    dateStart,
+    dateEnd,
+    state: 'In progress',
+    totalPrice,
+  };
+  const request = await Article.findOneAndUpdate({ _id: articleId }, {
+    $push: { rent },
+  });
+  res.status(200).json(request);
 });
 
 module.exports = router;
