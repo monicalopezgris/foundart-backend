@@ -154,7 +154,7 @@ router.get('/favorites', async (req, res, next) => {
   }
 });
 
-router.post('/favorites', async (req, res, next) => {
+router.put('/favorites', async (req, res, next) => {
   const { _id: userID } = req.session.currentUser;
   const { articleId } = req.body;
   const favorite = { articleID: articleId };
@@ -170,6 +170,17 @@ router.post('/favorites', async (req, res, next) => {
       res.status(200).json(user);
     }
     res.status(422).json({ message: 'The article is already favorite' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET single article favorite
+router.get('/favorites/:id', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const fav = await Article.findById(id).populate('userID');
+    res.status(200).json(fav);
   } catch (error) {
     next(error);
   }
