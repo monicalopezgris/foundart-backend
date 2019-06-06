@@ -10,7 +10,7 @@ module.exports = {
       .isLength({ min: 1 })
       .withMessage('Insert your last name'),
     check('username')
-      .isLength({ min: 4 })
+      .isLength({ min: 3 })
       .withMessage('Username must be 4 digits long'),
     check('telephone')
       .isLength({ min: 9, max: 9 })
