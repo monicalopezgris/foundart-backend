@@ -15,13 +15,14 @@ const {
 router.get('/me',
   isLoggedIn(),
   (req, res, next) => {
+    console.log('session', req.session);
     res.json(req.session.currentUser);
   });
 
 router.post(
   '/login',
   isNotLoggedIn(),
-  validationLoggin(),
+  // validationLoggin(),
   async (req, res, next) => {
     const { username, password } = req.body;
     try {
@@ -66,24 +67,23 @@ router.post(
       const user = await User.findOne({ username }, 'username');
       if (user) {
         return next(createError(422));
-      } else {
-        const salt = bcrypt.genSaltSync(10);
-        const hashPass = bcrypt.hashSync(password, salt);
-        const newUser = await User.create({
-          name,
-          lastName,
-          username,
-          telephone,
-          email,
-          loc: {
-            type: 'Point',
-            coordinates: [long, lat],
-          },
-          password: hashPass,
-        });
-        req.session.currentUser = newUser;
-        res.status(200).json(newUser);
       }
+      const salt = bcrypt.genSaltSync(10);
+      const hashPass = bcrypt.hashSync(password, salt);
+      const newUser = await User.create({
+        name,
+        lastName,
+        username,
+        telephone,
+        email,
+        loc: {
+          type: 'Point',
+          coordinates: [long, lat],
+        },
+        password: hashPass,
+      });
+      req.session.currentUser = newUser;
+      res.status(200).json(newUser);
     } catch (error) {
       next(error);
     }
