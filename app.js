@@ -2,9 +2,13 @@ const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
+const multipart = require('connect-multiparty');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const cors = require('cors');
+const Datastore = require('nedb');
+const Pusher = require('pusher');
 const MongoStore = require('connect-mongo')(session);
 require('dotenv').config();
 
@@ -23,7 +27,7 @@ mongoose
   .catch((error) => {
     console.error(error);
   });
-
+ 
 const app = express();
 
 app.use((req, res, next) => {
