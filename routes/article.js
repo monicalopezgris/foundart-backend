@@ -3,8 +3,31 @@ const moment = require('moment');
 const { validationResult, nearValidator, newUpdateArticleValidator, idValidator } = require('../helpers/validators/article');
 const Article = require('../models/article');
 const User = require('../models/user');
-const uploadCloud = require('../config/cloudinary.js');
+const uploadCloud = require('../config/cloudinary');
+const multipart = require('connect-multiparty');
 const router = express.Router();
+const Datastore = require('nedb');
+const Pusher = require('pusher');
+const cloudinary = require('cloudinary');
+
+
+const db = new Datastore();
+const multipartMiddleware = multipart();
+const pusher = new Pusher({
+    appId: process.env.PUSHER_APP_ID,
+    key: process.env.PUSHER_APP_KEY,
+    secret: process.env.PUSHER_APP_SECRET,
+    cluster: process.env.PUSHER_APP_CLUSTER,
+    encrypted: true,
+  });
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET,
+  });
+
+//const cloudinary = require('cloudinary');
+
 const {
   isLoggedIn,
   isNotLoggedIn,
@@ -68,31 +91,45 @@ router.get('/near', nearValidator, async (req, res, next) => {
   }
 });
 
+
+
+
+
+
 /* POST new article */
-router.post('/', isLoggedIn(), newUpdateArticleValidator, uploadCloud.single('image'), async (req, res, next) => {
+
+router.post('/', newUpdateArticleValidator, async(req, res, next) => {
+  try {
+
   const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json(errors.array());
-  }
-
+  const {values} = req.body;
+  console.log(values)
+  //console.log(req.body)
   const {
-    title, price, category, image, type, description, state,
-  } = req.body;
+    title, price, category, type, description, state, image,
+  } = values;
+  console.log('ok',title, category, image)
+  /* if (!errors.isEmpty()) {
+    return res.status(422).json(errors.array());
+  } */
 
-  // // Set img url and name
-  // const imgPath = req.file.url;
-  // // Set currrentUser as leessee
+ /*  const {
+    title, price, category, image, type, description, state,
+  } = values; */
+
+  // Set img url and name
+  //const imgPath = image;
+  const imgPath = image;
+  console.log('url img',imgPath)
+  // Set currrentUser as leessee
   const userID = '5cf3e1b98a36e228ca1242f8';
   const lesseeID = userID;
 
-  try {
     const article = await Article.create({
-      title, price, category,
-      //  imgPath,
+      title, price, category,imgPath,
       lesseeID, userID, type, description, state,
     });
-    res.status(200).json(article);
+    res.status(200).json(article);  
   } catch (error) {
     console.log(error);
   }
