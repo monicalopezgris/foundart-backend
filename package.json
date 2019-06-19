@@ -24,13 +24,9 @@
     "mongoose": "^5.3.0",
     "morgan": "~1.9.0",
     "multer": "^1.4.1",
-<<<<<<< HEAD
     "multer-storage-cloudinary": "^2.2.1",
     "nedb": "^1.8.0",
     "pusher": "^2.2.0"
-=======
-    "multer-storage-cloudinary": "^2.2.1"
->>>>>>> 4bc59a44855ebe28cf890c66b238dc16ace6bfd1
   },
   "devDependencies": {
     "eslint": "^5.16.0",

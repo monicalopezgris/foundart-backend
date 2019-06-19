@@ -21,7 +21,7 @@ router.get('/me',
 
 router.post(
   '/login',
-  // isNotLoggedIn(),
+  isNotLoggedIn(),
   // validationLoggin(),
   async (req, res, next) => {
     const { username, password } = req.body;
