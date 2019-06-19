@@ -11,10 +11,8 @@ const userSchema = new Schema({
   email: String,
   password: String,
   favorite: [{
-    articleID: {
-      type: ObjectId,
-      ref: 'Article',
-    },
+    type: ObjectId,
+    ref: 'Article',
   }],
   loc: {
     type: {
